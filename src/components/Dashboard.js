@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { db } from "../firebase";
 import { collection, onSnapshot } from "firebase/firestore";
-import { PieChart, Pie, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell } from "recharts";
+import { PieChart, Pie, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from "recharts";
 
 const Dashboard = ({ selectedStatus, onStatusSelect }) => {
   const [stats, setStats] = useState({
@@ -51,8 +51,6 @@ const Dashboard = ({ selectedStatus, onStatusSelect }) => {
   const handleStatusClick = (status) => {
     onStatusSelect(selectedStatus === status ? null : status);
   };
-
-  const COLORS = ["#1976d2", "#f57c00", "#d32f2f", "#388e3c"];
 
   return (
     <div style={{ margin: "1rem 0", padding: "1rem" }}>
