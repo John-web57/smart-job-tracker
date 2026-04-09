@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { db } from "../firebase";
-import { collection, onSnapshot } from "firebase/firestore";
+import { auth, db } from "../firebase";
+import { collection, onSnapshot, query, where } from "firebase/firestore";
 import { PieChart, Pie, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from "recharts";
 
 const Dashboard = ({ selectedStatus, onStatusSelect }) => {
@@ -13,7 +13,12 @@ const Dashboard = ({ selectedStatus, onStatusSelect }) => {
   });
 
   useEffect(() => {
-    const unsubscribe = onSnapshot(collection(db, "jobs"), (snapshot) => {
+    const jobsQuery = query(
+      collection(db, "jobs"),
+      where("ownerUid", "==", auth.currentUser.uid)
+    );
+
+    const unsubscribe = onSnapshot(jobsQuery, (snapshot) => {
       let total = snapshot.size;
       let applied = 0;
       let interview = 0;

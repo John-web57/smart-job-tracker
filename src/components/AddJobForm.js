@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { db } from "../firebase";
+import { auth, db } from "../firebase";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 
 const AddJobForm = () => {
@@ -33,6 +33,7 @@ const AddJobForm = () => {
         status,
         notes: notes.trim(),
         createdAt: serverTimestamp(),
+        ownerUid: auth.currentUser.uid,
       });
       resetForm();
     } catch (err) {

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { db } from "../firebase";
-import { collection, query, orderBy, onSnapshot, doc, deleteDoc, updateDoc } from "firebase/firestore";
+import { auth, db } from "../firebase";
+import { collection, onSnapshot, doc, deleteDoc, updateDoc, query, where } from "firebase/firestore";
 
 const JobList = ({ selectedStatus, onClearFilter }) => {
   const navigate = useNavigate();
@@ -10,14 +10,20 @@ const JobList = ({ selectedStatus, onClearFilter }) => {
   const [editForm, setEditForm] = useState({});
 
   useEffect(() => {
-    // Reference to 'jobs' collection
-    const q = query(collection(db, "jobs"), orderBy("createdAt", "desc"));
+    const jobsQuery = query(
+      collection(db, "jobs"),
+      where("ownerUid", "==", auth.currentUser.uid)
+    );
 
-    // Real-time listener
-    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+    const unsubscribe = onSnapshot(jobsQuery, (querySnapshot) => {
       const jobsArray = [];
       querySnapshot.forEach((doc) => {
         jobsArray.push({ id: doc.id, ...doc.data() });
+      });
+      jobsArray.sort((a, b) => {
+        const aTime = a.createdAt?.seconds ?? 0;
+        const bTime = b.createdAt?.seconds ?? 0;
+        return bTime - aTime;
       });
       setJobs(jobsArray);
     });

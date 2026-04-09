@@ -1,16 +1,15 @@
 // src/firebase.js
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
-import { getAuth } from "firebase/auth";
+import { getAuth, GoogleAuthProvider } from "firebase/auth";
 
-// Replace these values with your Firebase project config
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_AUTH_DOMAIN",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_STORAGE_BUCKET",
-  messagingSenderId: "YOUR_MSG_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyAd2F1xDeyzaNNFSKWlLXvCYee_lwDNnvs",
+  authDomain: "smart-job-tracker-66f5f.firebaseapp.com",
+  projectId: "smart-job-tracker-66f5f",
+  storageBucket: "smart-job-tracker-66f5f.firebasestorage.app",
+  messagingSenderId: "363141686788",
+  appId: "1:363141686788:web:1dc4f5193c40df6b44b751"
 };
 
 // Initialize Firebase
@@ -19,3 +18,4 @@ const app = initializeApp(firebaseConfig);
 // Export Firestore and Auth
 export const db = getFirestore(app);
 export const auth = getAuth(app);
+export const googleProvider = new GoogleAuthProvider();

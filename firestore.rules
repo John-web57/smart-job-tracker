@@ -1,0 +1,69 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner() {
+      return isSignedIn() && resource.data.ownerUid == request.auth.uid;
+    }
+
+    function isValidStatus(status) {
+      return status in ["Applied", "Interview", "Rejected", "Offer", "Accepted"];
+    }
+
+    function isValidJobCreate() {
+      return request.resource.data.keys().hasOnly([
+          "role",
+          "company",
+          "status",
+          "notes",
+          "createdAt",
+          "ownerUid"
+        ]) &&
+        request.resource.data.role is string &&
+        request.resource.data.role.size() > 0 &&
+        request.resource.data.role.size() <= 120 &&
+        request.resource.data.company is string &&
+        request.resource.data.company.size() > 0 &&
+        request.resource.data.company.size() <= 120 &&
+        request.resource.data.status is string &&
+        isValidStatus(request.resource.data.status) &&
+        request.resource.data.notes is string &&
+        request.resource.data.notes.size() <= 2000 &&
+        request.resource.data.ownerUid == request.auth.uid;
+    }
+
+    function isValidJobUpdate() {
+      return request.resource.data.keys().hasOnly([
+          "role",
+          "company",
+          "status",
+          "notes",
+          "createdAt",
+          "ownerUid"
+        ]) &&
+        request.resource.data.role is string &&
+        request.resource.data.role.size() > 0 &&
+        request.resource.data.role.size() <= 120 &&
+        request.resource.data.company is string &&
+        request.resource.data.company.size() > 0 &&
+        request.resource.data.company.size() <= 120 &&
+        request.resource.data.status is string &&
+        isValidStatus(request.resource.data.status) &&
+        request.resource.data.notes is string &&
+        request.resource.data.notes.size() <= 2000 &&
+        request.resource.data.createdAt == resource.data.createdAt &&
+        request.resource.data.ownerUid == resource.data.ownerUid &&
+        request.resource.data.ownerUid == request.auth.uid;
+    }
+
+    match /jobs/{jobId} {
+      allow read: if isOwner();
+      allow create: if isSignedIn() && isValidJobCreate();
+      allow update: if isOwner() && isValidJobUpdate();
+      allow delete: if isOwner();
+    }
+  }
+}

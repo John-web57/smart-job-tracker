@@ -7,8 +7,7 @@ const Home = () => {
   const [selectedStatus, setSelectedStatus] = useState(null);
 
   return (
-    <div>
-      <h1>Smart Job Application Tracker</h1>
+    <div className="page-shell">
       <AddJobForm />
       <Dashboard selectedStatus={selectedStatus} onStatusSelect={setSelectedStatus} />
       <JobList selectedStatus={selectedStatus} onClearFilter={() => setSelectedStatus(null)} />
